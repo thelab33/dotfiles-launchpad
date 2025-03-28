@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# ───────────────────────────────────────────────
+# 🧙 THE LAUNCHPAD — Multi-tool interactive launcher
+# https://github.com/yourwizardstack/terminal-magic
+# ───────────────────────────────────────────────
+
+# 🌈 Color palette
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+CYAN="\033[1;36m"
+RESET="\033[0m"
+
+# 🔍 Check if command exists
+check_cmd() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# 🚀 Launch with feedback
+launch() {
+    if check_cmd "$1"; then
+        echo -e "${GREEN}→ Launching $1...${RESET}"
+        "$1" "${@:2}" &
+    else
+        echo -e "${RED}✖ $1 is not installed or found in PATH.${RESET}"
+    fi
+}
+
+# 🌐 Browsers Menu
+browsers_menu() {
+    echo -e "${CYAN}\n🌐 Pick a browser:${RESET}"
+    select browser in chrome chromium firefox ungoogled lynx w3m win-chrome edge "⬅ Back" "❌ Quit"; do
+        case $browser in
+            "❌ Quit") echo -e "${YELLOW}👋 Bye!${RESET}"; exit 0 ;;
+            "⬅ Back") return ;;
+            "") echo -e "${RED}⚠️ Invalid choice${RESET}";;
+            *) launch "$browser" && break ;;
+        esac
+    done
+}
+
+# 🛠 Apps Menu
+apps_menu() {
+    echo -e "${YELLOW}\n🛠 Pick an app or tool:${RESET}"
+    select app in vscode notepadpp explorer "⬅ Back" "❌ Quit"; do
+        case $app in
+            "❌ Quit") echo -e "${YELLOW}👋 Bye!${RESET}"; exit 0 ;;
+            "⬅ Back") return ;;
+            "") echo -e "${RED}⚠️ Invalid choice${RESET}";;
+            *) launch "$app" && break ;;
+        esac
+    done
+}
+
+# 🧙 Main Menu
+main_menu() {
+    while true; do
+        echo -e "${CYAN}\n🎛 What do you want to launch?${RESET}"
+        select choice in "🌐 Browsers" "🛠 Apps/Tools" "❌ Exit"; do
+            case $choice in
+                "🌐 Browsers") browsers_menu ;;
+                "🛠 Apps/Tools") apps_menu ;;
+                "❌ Exit") echo -e "${YELLOW}👋 Bye!${RESET}"; exit 0 ;;
+                *) echo -e "${RED}⚠️ Invalid selection${RESET}" ;;
+            esac
+            break
+        done
+    done
+}
+
+# 🌀 Execute the magic
+main_menu
+
